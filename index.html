@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小钱特温柔</title>
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --container-color: #ffffff;
+      --text-color: #333333;
+      --input-bg-color: #f8f8f8;
+      --input-border-color: #e0e0e0;
+      --placeholder-color: #999999;
+      --primary-color: #409eff;
+      --primary-hover-color: #66b1ff;
+      --primary-active-color: #337ecc;
+      --success-color: #67c23a;
+      --error-color: #f56c6c;
+      --footer-color: #909399;
+      --switch-button-color: #333333;
+      --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --container-color: #262626;
+      --text-color: #e5e5e5;
+      --input-bg-color: #333333;
+      --input-border-color: #444444;
+      --placeholder-color: #777777;
+      --primary-color: #409eff;
+      --primary-hover-color: #66b1ff;
+      --primary-active-color: #337ecc;
+      --success-color: #67c23a;
+      --error-color: #f56c6c;
+      --footer-color: #777777;
+      --switch-button-color: #e5e5e5;
+      --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      background-color: var(--container-color);
+      padding: 35px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-light);
+      max-width: 420px;
+      width: 100%;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    #theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--input-bg-color);
+      border: 1px solid var(--input-border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--switch-button-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    #theme-toggle:hover {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      color: var(--placeholder-color);
+    }
+
+    #api-status {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      background-color: rgba(103, 194, 58, 0.1);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: white;
+      margin-left: 6px;
+    }
+
+    .status-online {
+      background-color: var(--success-color);
+    }
+
+    .status-offline {
+      background-color: var(--error-color);
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    label svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--placeholder-color);
+      transition: color 0.2s ease;
+      width: 20px;
+      height: 20px;
+    }
+
+    .input-icon:hover {
+      color: var(--primary-color);
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      padding: 13px 15px;
+      background-color: var(--input-bg-color);
+      border: 1px solid var(--input-border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-color);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--placeholder-color);
+    }
+
+    .steps-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .steps-container input[type="range"] {
+      flex-grow: 1;
+      /* -webkit-appearance: none; */
+      height: 6px;
+      background-color: var(--input-border-color);
+      border-radius: 3px;
+    }
+
+    .steps-container input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .steps-container input[type="range"]::-webkit-slider-thumb:hover {
+      background-color: var(--primary-hover-color);
+    }
+
+    .steps-container #steps-value-display {
+      min-width: 60px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: 15px;
+      padding: 5px 8px;
+      background-color: rgba(64, 158, 255, 0.1);
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--primary-hover-color);
+    }
+
+    .btn-submit:active {
+      background-color: var(--primary-active-color);
+      transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      background-color: var(--input-border-color);
+      color: var(--placeholder-color);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message-box {
+      margin-top: 18px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .message-box.success {
+      color: var(--success-color);
+      background-color: rgba(103, 194, 58, 0.1);
+    }
+
+    .message-box.error {
+      color: var(--error-color);
+      background-color: rgba(245, 108, 108, 0.1);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--footer-color);
+      margin-top: 25px;
+    }
+
+    .api-status {
+      text-align: center;
+      font-size: 12px;
+      /* color: var(--footer-color); */
+      margin-top: 25px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button id="theme-toggle">🌙</button>
+
+    <div class="header">
+      <h1>小钱特温柔</h1>
+      <div>3354225315@qq.com</div>
+    </div>
+    <!-- <div class="api-status">⚠请在API检测完毕为“可用”时再进行修改</div> -->
+    <div id="api-status">
+      API 状态: <span id="status-text">检测中...</span>
+    </div>
+
+    <form id="stepsForm">
+      <div class="form-group">
+        <label for="steps">
+          <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M13.5 12a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm-3 0a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm6-1.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm-3 0a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm-6-3a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm12 6a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zM6 16.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm3 0a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm-3 3a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3zm12 0a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3z" />
+          </svg>
+          目标步数
+        </label>
+        <input type="number" id="steps" name="steps" required min="1" max="98800" value="0">
+        <div class="steps-container">
+          <input type="range" id="steps-range" min="1" max="98800" value="0">
+          <span id="steps-value-display">0</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">提交修改</button>
+      <div id="message" class="message-box"></div>
+    </form>
+
+    <div class="footer">
+      &copy; 2026 Wen | GitHub · 未备案 | 仅供学习交流使用
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://api.5k4.cn/api/zeep';
+    const API_KEY = '2e1ea3f60e06d0c5';
+    const stepsInput = document.getElementById('steps');
+    const stepsRange = document.getElementById('steps-range');
+    const stepsValueDisplay = document.getElementById('steps-value-display');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const apiStatus = document.getElementById('status-text');
+
+    // 固定的账号和密码
+    const FIXED_ACCOUNT = '3354225315@qq.com';
+    const FIXED_PASSWORD = 'hhyyrrzzW55';
+
+    // API状态检测
+    async function checkApiStatus() {
+      try {
+        const response = await fetch(`${API_URL}?key=${API_KEY}&account=test&password=test&steps=1`, {
+          method: 'GET',
+          mode: 'cors',
+          timeout: 5000
+        });
+        if (response.ok) {
+          apiStatus.innerHTML = '在线 <span class="status-badge status-online">可用</span>';
+        } else {
+          apiStatus.innerHTML = '离线 <span class="status-badge status-offline">不可用</span>';
+        }
+      } catch (error) {
+        apiStatus.innerHTML = '离线 <span class="status-badge status-offline">不可用</span>';
+      }
+    }
+
+    // 页面初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('step-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      themeToggleBtn.innerHTML = savedTheme === 'light' ? '🌙' : '☀️';
+      checkApiStatus();
+    });
+
+    // 步数同步
+    function syncSteps(source) {
+      const value = source === 'input' ? stepsInput.value : stepsRange.value;
+      stepsInput.value = value;
+      stepsRange.value = value;
+      stepsValueDisplay.textContent = value;
+    }
+    stepsInput.addEventListener('input', () => syncSteps('input'));
+    stepsRange.addEventListener('input', () => syncSteps('range'));
+
+    // 深色模式切换
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      themeToggleBtn.innerHTML = newTheme === 'light' ? '🌙' : '☀️';
+      localStorage.setItem('step-theme', newTheme);
+    });
+
+    // 表单提交
+    document.getElementById('stepsForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const messageDiv = document.getElementById('message');
+      const submitButton = this.querySelector('.btn-submit');
+      const steps = stepsInput.value;
+
+      submitButton.disabled = true;
+      submitButton.textContent = '提交中...';
+      messageDiv.textContent = '';
+      messageDiv.className = 'message-box';
+
+      try {
+        const apiUrl = `${API_URL}?key=${API_KEY}&account=${encodeURIComponent(FIXED_ACCOUNT)}&password=${encodeURIComponent(FIXED_PASSWORD)}&steps=${steps}`;
+        const response = await fetch(apiUrl, { method: 'GET' });
+        const contentType = response.headers.get('content-type');
+        let result = {};
+
+        if (contentType && contentType.includes('application/json')) {
+          result = await response.json();
+        } else {
+          const text = await response.text();
+          result = {
+            success: text.includes('成功') || text.includes('success'),
+            message: text
+          };
+        }
+
+        if (response.ok && result.success) {
+          messageDiv.textContent = result.message || '步数修改成功！';
+          messageDiv.className = 'message-box success';
+        } else {
+          messageDiv.textContent = result.message || '修改失败，请检查账号密码或稍后重试';
+          messageDiv.className = 'message-box error';
+        }
+      } catch (error) {
+        messageDiv.textContent = '网络异常，请检查网络连接';
+        messageDiv.className = 'message-box error';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = '提交修改';
+      }
+    });
+  </script>
+</body>
+
+</html>
